@@ -1,8 +1,7 @@
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.neighbors import KNeighborsRegressor
-from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 import matplotlib.pyplot as plt
 
@@ -17,29 +16,15 @@ y = data['Selling_Price']
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
+rf_regressor = RandomForestRegressor(n_estimators=100, random_state=42)
+rf_regressor.fit(X_train, y_train)
 
-best_mse = float('inf')
-best_k = None
-for k in range(1, 21):
-    knn = KNeighborsRegressor(n_neighbors=k)
-    knn.fit(X_train_scaled, y_train)
-    y_pred = knn.predict(X_test_scaled)
-    mse = mean_squared_error(y_test, y_pred)
-    if mse < best_mse:
-        best_mse = mse
-        best_k = k
-
-knn = KNeighborsRegressor(n_neighbors=best_k)
-knn.fit(X_train_scaled, y_train)
-y_pred = knn.predict(X_test_scaled)
+y_pred = rf_regressor.predict(X_test)
 
 mse = mean_squared_error(y_test, y_pred)
 r2 = r2_score(y_test, y_pred)
-print("Best k:", best_k)
 print("Mean Squared Error:", mse)
+
 plt.figure(figsize=(8, 6))
 plt.scatter(y_test, y_pred, color='blue')
 plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], '--', color='red')

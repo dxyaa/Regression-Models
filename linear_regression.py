@@ -25,7 +25,6 @@ y_pred = model.predict(X_test)
 mse = mean_squared_error(y_test, y_pred)
 r2 = r2_score(y_test, y_pred)
 print("Mean Squared Error:", mse)
-print("R^2 Score:", r2)
 
 new_data_categorical = [2016, 80000, 'Petrol', 'Individual', 'Manual', 1] 
 new_data_numerical = encode_categorical_variables(*new_data_categorical)  
